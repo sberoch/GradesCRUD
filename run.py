@@ -16,3 +16,7 @@ def refresh():
 		client.insert_grades(moodle.get_grades_for_course(course['_id']))
 
 refresh()
+
+print(client.get_courses({'shortname': 'D - CNV'}).next())
+
+client.delete_course(4)

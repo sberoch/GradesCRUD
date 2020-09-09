@@ -13,7 +13,10 @@ class DataSource:
 		return self.db.courses.find({'test': 'test'})
 
 	def insert_courses(self, courses):
-		courses = [c for c in courses if c['format'] != 'site']
 		for course in courses:
 			course['_id'] = course.pop('id')
 		self.db.courses.insert_many(courses)
+
+	def insert_grades(self, course_grades):
+		if course_grades['usergrades']:
+			self.db.grades.insert_many(course_grades['usergrades'])

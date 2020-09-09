@@ -29,5 +29,5 @@ def get_courses():
 courses = get_courses()
 grades.insert_courses(courses)
 for course in courses:
-	print('Inserting course ', course['_id'])
+	print('Inserting course', course['_id'])
 	grades.insert_grades(get_grades_for_course(course['_id']))

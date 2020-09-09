@@ -15,8 +15,10 @@ class DataSource:
 	def insert_courses(self, courses):
 		for course in courses:
 			course['_id'] = course.pop('id')
+		self.db.courses.delete_many({})
 		self.db.courses.insert_many(courses)
 
 	def insert_grades(self, course_grades):
 		if course_grades['usergrades']:
+			self.db.grades.delete_many({})
 			self.db.grades.insert_many(course_grades['usergrades'])

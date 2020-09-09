@@ -1,33 +1,18 @@
 import data_source as ds
-import requests
-import json
+import moodle
 
+client = ds.DataSource()
 
-base_url = 'http://www.ing-racero.com.ar/webservice/rest/server.php'
-token = '44d471767bb81f48258fd27698d233d1'
+def refresh():
+	print('Deleting all previous data')
+	client.clear()
 
-grades = ds.DataSource()
+	courses = moodle.get_courses()
+	print('Inserting courses')
+	client.insert_courses(courses)
 
-def get_grades_for_course(course_id):
-	params = {
-		'wstoken': token, 
-		'wsfunction': 'gradereport_user_get_grade_items',
-		'moodlewsrestformat': 'json',
-		'courseid': course_id
-	}
-	return requests.get(base_url, params=params).json()
+	for course in courses:
+		print('Inserting grades for course', course['_id'])
+		client.insert_grades(moodle.get_grades_for_course(course['_id']))
 
-def get_courses():
-	params = {
-		'wstoken': token, 
-		'wsfunction': 'core_course_get_courses',
-		'moodlewsrestformat': 'json'
-	}
-	courses = requests.get(base_url, params=params).json()
-	return [c for c in courses if c['format'] != 'site']
-
-courses = get_courses()
-grades.insert_courses(courses)
-for course in courses:
-	print('Inserting course', course['_id'])
-	grades.insert_grades(get_grades_for_course(course['_id']))
+refresh()

@@ -17,6 +17,26 @@ def refresh():
 
 refresh()
 
-print(client.get_courses({'shortname': 'D - CNV'}).next())
+print(client.get_courses().next())
 
-client.delete_course(4)
+#client.delete_course(4)
+
+#for grade in client.get_grades(2):
+	#print(grade)
+
+
+new_grade = {
+	'id': 19,
+	'itemname': 'Primer Parcial',
+	'gradeformatted': 10
+}
+client.insert_grade(2, 6, new_grade)
+
+updated_grade = {
+	'id': 19,
+	'itemname': 'Primer Parcial',
+	'gradeformatted': 9
+}
+client.delete_grade(2, 6, 19)
+
+print(client.get_course(2).next())

@@ -19,10 +19,10 @@ refresh()
 
 print(client.get_courses().next())
 
-#client.delete_course(4)
+print(client.get_course(2).next())
 
-#for grade in client.get_grades(2):
-	#print(grade)
+for grade in client.get_grades(2):
+	print(grade)
 
 
 new_grade = {
@@ -37,6 +37,14 @@ updated_grade = {
 	'itemname': 'Primer Parcial',
 	'gradeformatted': 9
 }
-client.delete_grade(2, 6, 19)
+client.update_grade(2, 6, 19, updated_grade)
 
-print(client.get_course(2).next())
+client.delete_grade(2, 6, 1)
+
+fields = {
+	'shortname': 'NEWNAME',
+	'fullname': 'New name for this course'
+}
+client.update_course(2, fields)
+
+client.delete_course(4)

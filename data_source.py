@@ -24,8 +24,7 @@ class DataSource:
 		if course_grades['usergrades']:
 			self.db.grades.insert_many(course_grades['usergrades'])
 
-	#TODO: terminar
-	def update_grade(self, student_id, course_id, grade_id, updated_grade):
+	def update_grade(self, course_id, student_id, grade_id, updated_grade):
 		query = {
 			'courseid': course_id,
 			'userid': student_id,
@@ -33,14 +32,20 @@ class DataSource:
 		}
 		action = {
 			'$set': {
-				'gradeitems.$.content': updated_grade
+				'gradeitems.$': updated_grade
 			}
 		}
 		self.db.grades.update_one(query, action)
 
 
-	def update_course(self, course_id, fields):
-		pass
+	def update_course(self, course_id, fields_to_update):
+		query = { 
+			'_id': course_id
+		}
+		action = {
+			'$set': fields_to_update
+		}
+		self.db.courses.update_one(query, action)
 
 
 	def delete_course(self, course_id):

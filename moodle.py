@@ -25,7 +25,7 @@ def get_courses():
 	}
 	courses = requests.get(base_url, params=params).json()
 	for course in courses:
-		course['formatted_startdate'] = _get_formatted_startdate(course['startdate'])
+		course['quarter'] = _get_formatted_startdate(course['startdate'])
 	return [c for c in courses if c['format'] != 'site']
 
 

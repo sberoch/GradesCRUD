@@ -4,7 +4,7 @@ from pymongo import MongoClient
 URI = 'mongodb+srv://admin:admin@campus.japbq.mongodb.net/test'
 NAME = 'campus'
 
-class DataSource:
+class CampusDAO:
 	def __init__(self):
 		self.db = MongoClient(URI)[NAME]
 
@@ -72,7 +72,7 @@ class DataSource:
 
 
 	def get_courses(self, query={}):
-		return self.db.courses.find(query)
+		return list(self.db.courses.find(query))
 
 
 	def get_grades(self, course_id):

@@ -1,10 +1,8 @@
 # GradesCRUD
- Grades CRUD for a Moodle campus. Using MongoDB.
+ Grades CRUD for a Moodle campus.
 
-## Installation
+## App
+Flask app for admin actions over grades and courses.
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install requirements.
-
-```bash
-pip install pymongo
-```
+## Cloud functions
+Campus functions meant to be scheduled.

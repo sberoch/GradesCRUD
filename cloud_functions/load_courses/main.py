@@ -11,3 +11,7 @@ def load_courses(request):
 
 	for course in courses:
 		client.insert_grades(moodle.get_grades_for_course(course['_id']))
+
+
+if __name__ == '__main__':
+	load_courses('')

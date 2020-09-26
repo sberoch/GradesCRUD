@@ -1,4 +1,6 @@
 from pymongo import MongoClient
+from pymongo.errors import DuplicateKeyError
+from bson.json_util import dumps
 
 #TODO: Get these variables from environment
 URI = 'mongodb+srv://admin:admin@campus.japbq.mongodb.net/test'
@@ -24,6 +26,18 @@ class CampusDAO:
 		if course_grades['usergrades']:
 			self.db.grades.insert_many(course_grades['usergrades'])
 
+
+	def update_course(self, course_id, updated_course):
+		query = { 
+			'_id': course_id
+		}
+		action = {
+			'$set': updated_course
+		}
+		res = self.db.courses.update_one(query, action)
+		return res.modified_count == 1
+
+
 	def update_grade(self, course_id, student_id, grade_id, updated_grade):
 		query = {
 			'courseid': course_id,
@@ -35,21 +49,13 @@ class CampusDAO:
 				'gradeitems.$': updated_grade
 			}
 		}
-		self.db.grades.update_one(query, action)
-
-
-	def update_course(self, course_id, fields_to_update):
-		query = { 
-			'_id': course_id
-		}
-		action = {
-			'$set': fields_to_update
-		}
-		self.db.courses.update_one(query, action)
+		res = self.db.grades.update_one(query, action)
+		return res.modified_count == 1
 
 
 	def delete_course(self, course_id):
-		self.db.courses.delete_one({'_id': course_id})
+		res = self.db.courses.delete_one({'_id': course_id})
+		return res.deleted_count == 1
 
 
 	def delete_grade(self, course_id, student_id, grade_id):
@@ -64,11 +70,12 @@ class CampusDAO:
 				}
 			}
 		}
-		self.db.grades.update_one(query, action)
+		res = self.db.grades.update_one(query, action)
+		return res.modified_count == 1
 
 
 	def get_course(self, course_id):
-		return self.db.courses.find({'_id': course_id})
+		return self.db.courses.find_one({'_id': course_id})
 
 
 	def get_courses(self, query={}):
@@ -88,12 +95,16 @@ class CampusDAO:
 		    'gradeitems.itemname': 1, 
 		    'gradeitems.gradeformatted': 1
 		}
-		return self.db.grades.find(query, projection)
+		return list(self.db.grades.find(query, projection))
 
 
 	def insert_course(self, new_course):
-		self.db.courses.insert_one(new_course)
-
+		try:
+			self.db.courses.insert_one(new_course)
+			return True
+		except DuplicateKeyError:
+			return False
+		
 
 	def insert_grade(self, course_id, student_id, grade):
 		query = {
@@ -105,7 +116,8 @@ class CampusDAO:
 				'gradeitems': grade
 			}
 		}
-		self.db.grades.update_one(query, action)
+		res = self.db.grades.update_one(query, action)
+		return res.modified_count == 1
 
 
 

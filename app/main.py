@@ -1,8 +1,10 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 from http import HTTPStatus
 import campus_dao as cdao
 
 app = Flask(__name__)
+CORS(app)
 
 campus = cdao.CampusDAO()
 

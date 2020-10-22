@@ -38,16 +38,13 @@ class CampusDAO:
 		return res.modified_count == 1
 
 
-	def update_grade(self, course_id, student_id, grade_id, updated_grade):
+	def update_grade(self, course_id, student_id, updated_grade):
 		query = {
 			'courseid': course_id,
 			'userid': student_id,
-			'gradeitems.id': grade_id
 		}
 		action = {
-			'$set': {
-				'gradeitems.$': updated_grade
-			}
+			'$set': updated_grade
 		}
 		res = self.db.grades.update_one(query, action)
 		return res.modified_count == 1
@@ -58,20 +55,13 @@ class CampusDAO:
 		return res.deleted_count == 1
 
 
-	def delete_grade(self, course_id, student_id, grade_id):
+	def delete_grades(self, course_id, student_id):
 		query = {
 			'courseid': course_id,
 			'userid': student_id,
 		}
-		action = {
-			'$pull': {
-				'gradeitems': {
-					'id': grade_id
-				}
-			}
-		}
-		res = self.db.grades.update_one(query, action)
-		return res.modified_count == 1
+		res = self.db.grades.delete_one(query)
+		return res.deleted_count == 1
 
 
 	def get_course(self, course_id):
@@ -106,18 +96,12 @@ class CampusDAO:
 			return False
 		
 
-	def insert_grade(self, course_id, student_id, grade):
-		query = {
-			'courseid': course_id,
-			'userid': student_id
-		}
-		action = {
-			'$push': {
-				'gradeitems': grade
-			}
-		}
-		res = self.db.grades.update_one(query, action)
-		return res.modified_count == 1
+	def insert_grades_for_student(self, grades):
+		try:
+			self.db.grades.insert_one(grades)
+			return True
+		except DuplicateKeyError:
+			return False
 
 
 

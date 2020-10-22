@@ -38,18 +38,18 @@ def insert_course():
 		return f"Course already exists", HTTPStatus.BAD_REQUEST 
 
 
-@app.route('/courses/<int:course_id>/students/<int:student_id>/grades', methods=['POST'])
-def insert_grade(course_id, student_id):
-	grade = request.get_json()
-	inserted = campus.insert_grade(course_id, student_id, grade)
+@app.route('/courses/<int:course_id>/grades', methods=['POST'])
+def insert_grades(course_id, student_id):
+	grades = request.get_json()
+	inserted = campus.insert_grades_for_student(grades)
 	if inserted:
-		return f"Grade created.", HTTPStatus.OK
+		return f"grades created.", HTTPStatus.OK
 	else:
 		return f"Could not found that course/student combination", HTTPStatus.NOT_FOUND 
 
 
 @app.route('/courses/<int:course_id>', methods=['PUT'])
-def update_course(course_id):
+def update_courses(course_id):
 	course = request.get_json()
 	updated = campus.update_course(course_id, course)
 	if updated:
@@ -58,12 +58,12 @@ def update_course(course_id):
 		return f"Course not found", HTTPStatus.NOT_FOUND 
 
 
-@app.route('/courses/<int:course_id>/students/<int:student_id>/grades/<int:grade_id>', methods=['PUT'])
-def update_grade(course_id, student_id, grade_id):
-	grade = request.get_json()
-	updated = campus.update_grade(course_id, student_id, grade_id, grade)
+@app.route('/courses/<int:course_id>/grades/<int:student_id>', methods=['PUT'])
+def update_grades(course_id, student_id):
+	grades = request.get_json()
+	updated = campus.update_grades(course_id, student_id, grades)
 	if updated:
-		return f"Grade updated.", HTTPStatus.OK
+		return f"Grades updated.", HTTPStatus.OK
 	else:
 		return f"Grade not found", HTTPStatus.NOT_FOUND 
 
@@ -77,12 +77,12 @@ def delete_course(course_id):
 		return f"Course {course_id} not found", HTTPStatus.NOT_FOUND 
 
 
-@app.route('/courses/<int:course_id>/students/<int:student_id>/grades/<int:grade_id>', methods=['DELETE'])
-def delete_grade(course_id, student_id, grade_id):
-	deleted = campus.delete_grade(course_id, student_id, grade_id)
+@app.route('/courses/<int:course_id>/grades/<int:student_id>', methods=['DELETE'])
+def delete_grades(course_id, student_id):
+	deleted = campus.delete_grades(course_id, student_id)
 	if deleted:
-		return f"Deleted grade {grade_id} from student {student_id}, course {course_id}",\
+		return f"Deleted grades from student {student_id}, course {course_id}",\
 				HTTPStatus.OK
 	else:
-		return f"Grade {grade_id} not found", HTTPStatus.NOT_FOUND 
+		return f"Grade not found", HTTPStatus.NOT_FOUND 
 

@@ -12,19 +12,19 @@ class CampusDAO:
 
 
 	def clear(self):
-		self.db.courses.delete_many({})
-		self.db.grades.delete_many({})
+		self.db.coursesTest.delete_many({})
+		self.db.gradesTest.delete_many({})
 
 
 	def insert_courses(self, courses):
 		for course in courses:
 			course['_id'] = course.pop('id')
-		self.db.courses.insert_many(courses)
+		self.db.coursesTest.insert_many(courses)
 
 
 	def insert_grades(self, course_grades):
 		if course_grades['usergrades']:
-			self.db.grades.insert_many(course_grades['usergrades'])
+			self.db.gradesTest.insert_many(course_grades['usergrades'])
 
 
 	def update_course(self, course_id, updated_course):
@@ -34,11 +34,11 @@ class CampusDAO:
 		action = {
 			'$set': updated_course
 		}
-		res = self.db.courses.update_one(query, action)
+		res = self.db.coursesTest.update_one(query, action)
 		return res.modified_count == 1
 
 
-	def update_grade(self, course_id, student_id, updated_grade):
+	def update_grades(self, course_id, student_id, updated_grade):
 		query = {
 			'courseid': course_id,
 			'userid': student_id,
@@ -46,12 +46,12 @@ class CampusDAO:
 		action = {
 			'$set': updated_grade
 		}
-		res = self.db.grades.update_one(query, action)
+		res = self.db.gradesTest.update_one(query, action)
 		return res.modified_count == 1
 
 
 	def delete_course(self, course_id):
-		res = self.db.courses.delete_one({'_id': course_id})
+		res = self.db.coursesTest.delete_one({'_id': course_id})
 		return res.deleted_count == 1
 
 
@@ -60,16 +60,16 @@ class CampusDAO:
 			'courseid': course_id,
 			'userid': student_id,
 		}
-		res = self.db.grades.delete_one(query)
+		res = self.db.gradesTest.delete_one(query)
 		return res.deleted_count == 1
 
 
 	def get_course(self, course_id):
-		return self.db.courses.find_one({'_id': course_id})
+		return self.db.coursesTest.find_one({'_id': course_id})
 
 
 	def get_courses(self, query={}):
-		return list(self.db.courses.find(query))
+		return list(self.db.coursesTest.find(query))
 
 
 	def get_grades(self, course_id):
@@ -85,12 +85,12 @@ class CampusDAO:
 		    'gradeitems.itemname': 1, 
 		    'gradeitems.gradeformatted': 1
 		}
-		return list(self.db.grades.find(query, projection))
+		return list(self.db.gradesTest.find(query, projection))
 
 
 	def insert_course(self, new_course):
 		try:
-			self.db.courses.insert_one(new_course)
+			self.db.coursesTest.insert_one(new_course)
 			return True
 		except DuplicateKeyError:
 			return False
@@ -98,7 +98,7 @@ class CampusDAO:
 
 	def insert_grades_for_student(self, grades):
 		try:
-			self.db.grades.insert_one(grades)
+			self.db.gradesTest.insert_one(grades)
 			return True
 		except DuplicateKeyError:
 			return False
